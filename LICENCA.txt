@@ -1,0 +1,15 @@
+﻿Bíblia Digital Windows 11 - uso local/offline.
+Bíblia Digital © 2026 Estudo Bíblico - http://estudobiblico.org
+
+Distribuição livre e gratuita autorizada: o programa pode ser copiado, compartilhado e
+instalado sem custo, mantendo este aviso e o rodapé do programa.
+
+Textos bíblicos incluídos no programa (pasta data):
+- Almeida 1911, King James Version, Reina-Valera 1909 e Louis Segond 1910: domínio público.
+- Bíblia Livre (BLIVRE): Copyright (c) Diego Santos, Mário Sérgio e Marco Teles, sob licença
+  livre Creative Commons Atribuição 3.0 Brasil (http://creativecommons.org/licenses/by/3.0/br/):
+  uso e distribuição livres, com crédito aos autores.
+- VEB - Versão Estudo Bíblico: pertence ao Estudo Bíblico (http://estudobiblico.org).
+
+Versões importadas pelo usuário (botão "Versões...") não fazem parte desta distribuição e seguem
+os direitos de seus próprios autores e editoras.

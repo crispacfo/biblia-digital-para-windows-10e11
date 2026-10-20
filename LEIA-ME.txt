@@ -1,0 +1,79 @@
+﻿BÍBLIA DIGITAL 1.8.1 — para Windows 10 e 11
+Bíblia Digital © 2026 Estudo Bíblico — http://estudobiblico.org
+Distribuição livre e gratuita autorizada: copie e compartilhe à vontade, sem custo.
+
+Leitura, busca e estudo da Bíblia no computador, sem internet e sem instalação.
+
+
+COMO ABRIR
+1. Antes de descompactar, clique com o botão direito no arquivo ZIP > Propriedades >
+   marque "Desbloquear" > OK. Isso evita que o Windows bloqueie o programa.
+2. Descompacte o ZIP numa pasta (por exemplo, na Área de Trabalho ou em C:\).
+3. Dê dois cliques em BibliaDigital.exe.
+   Dica: botão direito em BibliaDigital.exe > Enviar para > Área de trabalho (criar atalho).
+
+IMPORTANTE: mantenha a pasta "data" sempre ao lado do BibliaDigital.exe. Ela contém os textos bíblicos.
+
+Se aparecer "O Windows protegeu o computador", clique em "Mais informações" e depois em
+"Executar assim mesmo". O aviso aparece com programas novos que não têm assinatura digital.
+Se o antivírus colocar o arquivo em quarentena, baixe de novo pelo portal estudobiblico.org.
+
+Requisitos: Windows 10 ou 11. Não é preciso instalar nada (o .NET Framework 4 já vem no Windows).
+
+
+O QUE O PROGRAMA FAZ
+- Seis versões: VEB — Versão Estudo Bíblico, Bíblia Livre, Almeida 1911 (português), King James (inglês),
+  Reina-Valera 1909 (espanhol) e Louis Segond 1910 (francês).
+- Índice Digital: escolha a versão, o livro, o capítulo e o versículo e clique em "Abrir".
+- Busca: digite uma palavra ou frase e clique em "Buscar".
+  * Exata: só palavras inteiras ("amor" não traz "amorreus").
+  * Flexível: inclui sinônimos e termos do dicionário analógico.
+  * E / OU entre as palavras; em toda a Bíblia, só no AT, só no NT ou no livro aberto.
+  * Acentos e maiúsculas não atrapalham.
+  Clique num resultado para abrir o capítulo (Ctrl+clique abre em nova aba).
+- Leitura: versículo por versículo, texto corrido, parágrafos ou livro aberto (duas páginas).
+  No livro aberto, vire as folhas com as setas, PageUp/PageDown ou a roda do mouse.
+  Fonte, tamanho da letra (A- / A+) e tema de cor ficam na barra acima do texto.
+- Estudos: clique com o botão direito num versículo para marcar com cor, escrever anotação,
+  favoritar ou copiar com a referência. A aba "Meus estudos" reúne tudo e permite exportar.
+- "Continuar de onde parei" reabre a última leitura.
+
+
+IMPORTAR UMA VERSÃO DA BÍBLIA
+No Índice Digital, clique em "Versões..." > "Importar versão..." e escolha o arquivo.
+O programa mostra o que leu (livros, capítulos, versículos, exemplos e linhas com problema)
+e pede a sigla e o nome antes de gravar. A versão entra na lista na hora.
+Formatos aceitos (UTF-8 ou ANSI):
+- Colunas: livro;capítulo;versículo;texto  (separador ; , TAB ou |; cabeçalho opcional)
+    Gênesis;1;1;No princípio criou Deus os céus e a terra.
+    Jo;3;16;Porque Deus amou o mundo...
+  Também aceita uma coluna de número na frente: id,livro,capítulo,versículo,texto.
+- Uma referência por linha:  João 3:16 Porque Deus amou o mundo...
+- JSON com a lista de versículos ou de livros e capítulos.
+O livro pode vir como número (1 a 66), nome ou abreviação (Gn, Gênesis, 1 Samuel, 1Sm, John...).
+"Remover versão" tira da lista uma versão importada (o arquivo fica guardado como .removida).
+Atenção: importe só versões que você tem direito de usar. Muitas traduções modernas têm direitos autorais.
+
+
+ONDE FICAM OS SEUS DADOS
+Anotações, marcas, favoritos, histórico, preferências e versões importadas ficam em
+%LOCALAPPDATA%\BibliaDigital (cole esse endereço na barra do Explorador de Arquivos).
+São arquivos de texto simples; a cada gravação fica uma cópia de segurança .bak.
+Atualizar o programa (trocar o BibliaDigital.exe e a pasta data) não apaga os seus estudos.
+O programa não usa a internet e não envia nenhum dado.
+
+
+DIREITOS DOS TEXTOS
+- Almeida 1911, King James Version, Reina-Valera 1909 e Louis Segond 1910: domínio público.
+- Bíblia Livre (BLIVRE): Copyright (c) Diego Santos, Mário Sérgio e Marco Teles, sob licença livre
+  Creative Commons Atribuição 3.0 Brasil (http://creativecommons.org/licenses/by/3.0/br/).
+- VEB — Versão Estudo Bíblico: pertence ao Estudo Bíblico (http://estudobiblico.org).
+  Antigo Testamento traduzido do Códice de Leningrado (Westminster Leningrad Codex, via Open Scriptures
+  Hebrew Bible, CC BY 4.0); Novo Testamento traduzido do Textus Receptus (Scrivener 1894).
+- Marcas de parágrafo do Antigo Testamento: Open Scriptures Hebrew Bible (CC BY 4.0).
+Versões importadas pelo usuário seguem os direitos de seus próprios autores.
+
+O código-fonte do programa está disponível em pacote separado (BibliaDigital-1.8.1-Codigo-Fonte.zip)
+no portal http://estudobiblico.org.
+
+Problemas? Os erros ficam registrados em %LOCALAPPDATA%\BibliaDigital\erro.log.

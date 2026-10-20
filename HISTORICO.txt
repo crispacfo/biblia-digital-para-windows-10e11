@@ -1,0 +1,419 @@
+﻿Biblia Digital - historico de versoes (da mais nova para a mais antiga)
+Biblia Digital (c) 2026 Estudo Biblico - http://estudobiblico.org
+
+Novidades da versao 1.8.1:
+- Download em dois pacotes: BibliaDigital-1.8.1-Windows.zip (programa, textos e LEIA-ME) e
+  BibliaDigital-1.8.1-Codigo-Fonte.zip (codigo C#, scripts de compilacao e documentacao tecnica).
+- Rodape em todas as telas: propriedade (Estudo Biblico), distribuicao livre e gratuita, link para
+  http://estudobiblico.org, situacao de direitos das versoes incluidas e da VEB.
+- Janela um pouco mais alta para caber o rodape; em telas baixas a coluna do Indice rola.
+
+Novidades da versao 1.8.0:
+- Importar versoes da Biblia: botao "Versoes..." no Indice Digital (veja "Importar uma versao" acima).
+  Aceita colunas (CSV/TSV), referencias por linha, JSON (inclusive o da versao 1.3, com a Almeida Corrigida Fiel)
+  e o formato do programa. Mostra um resumo e os avisos antes de gravar.
+- Remover versoes importadas; substituir uma versao importada por outra com a mesma sigla.
+- Uma versao importada com defeito nao impede o programa de abrir: so ela fica de fora, com aviso.
+
+Novidades da versao 1.7.1:
+- Livro aberto com cara de livro impresso:
+  * cada pagina e uma folha com margens, sombra da lombada no meio e sombra sob o livro;
+  * cabecalho corrido no alto de cada pagina (ex.: "SALMOS 119:19-33") e numero da pagina no pe;
+  * titulo do capitulo centralizado; numeros dos versiculos na cor de destaque;
+  * a linha que continua um versiculo fica recuada, alinhada depois do numero;
+  * as paginas enchem ate o pe: a altura da linha e a largura do texto sao medidas na propria pagina,
+    sem barra de rolagem e sem cortar texto (testado com 5 fontes em 4 tamanhos);
+  * nao deixa o numero de um versiculo sozinho no pe da pagina, nem a ultima linha sozinha no alto da seguinte;
+  * no fim do capitulo, a folha vazia mostra "Fim do capitulo" e o que vem a seguir;
+  * folhear alem da ultima pagina abre o proximo capitulo; voltar da primeira abre o fim do anterior;
+  * roda do mouse, setas, PageUp/PageDown e Home/End viram as folhas.
+- Antivirus: a captura de tela usada so no autoteste saiu do .exe distribuido
+  (fica apenas na versao de teste, compilar-teste.bat). Copiar a tela e um comportamento que antivirus vigiam.
+
+Novidades da versao 1.7.0:
+- Estudos pessoais: clique com o botao direito sobre um versiculo do texto aberto para:
+  * marcar com cor (amarelo, verde, azul ou rosa);
+  * escrever ou editar uma anotacao (o sinal ✎ aparece no versiculo; passe o mouse para ler);
+  * adicionar ou remover dos favoritos (sinal ★);
+  * copiar o versiculo com a referencia, por exemplo "Joao 3:16 (VEB)".
+  Funciona nos quatro modos de leitura, inclusive no livro aberto, e vale para todas as versoes.
+- Ctrl+C no texto copia a selecao com a referencia. Trecho de um versiculo: copia so o trecho;
+  selecao de varios versiculos: copia os versiculos inteiros, numerados (Joao 3:16-17).
+- Nova aba "Meus estudos": listas de Favoritos, Anotacoes, Marca-texto e Historico (os ultimos 100
+  capitulos lidos), com Abrir (duplo clique ou Enter), Remover (tecla Delete) e Exportar lista para .txt.
+- "Continuar de onde parei": botao no Indice Digital e em Meus estudos reabre a ultima passagem lida,
+  na mesma versao.
+- Os estudos ficam em %LOCALAPPDATA%\BibliaDigital (notas.txt, marcas.txt, favoritos.txt, historico.txt),
+  arquivos de texto simples; a cada gravacao fica uma copia de seguranca .bak do arquivo anterior.
+
+Novidades da versao 1.6.1:
+- A VEB deixa de ser piloto: o nome da versao passa a ser "Portugues - Versao Estudo Biblico".
+- VEB: correcao de concordancia em Jo 26:6 ("o Seol esta nu").
+
+Novidades da versao 1.6.0:
+- VEB completa: entra o Apocalipse (capitulos 1 a 22). A Versao Estudo Biblico agora tem a Biblia inteira:
+  o Antigo Testamento traduzido do texto massoretico (WLC) e o Novo Testamento traduzido do Textus Receptus (Scrivener 1894),
+  66 livros. As notas de traducao de cada livro acompanham o projeto (notas-*.md).
+
+Novidades da versao 1.5.23:
+- VEB (piloto): entra a terceira carta de Joao completa (capitulo unico).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, Tiago, 1 e 2 Pedro, 1, 2 e 3 Joao e Judas.
+
+Novidades da versao 1.5.22:
+- VEB (piloto): entra a segunda carta de Joao completa (capitulo unico).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, Tiago, 1 e 2 Pedro, 1 e 2 Joao e Judas.
+
+Novidades da versao 1.5.21:
+- VEB (piloto): entra a primeira carta de Joao completa (capitulos 1 a 5).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, Tiago, 1 e 2 Pedro, 1 Joao e Judas.
+
+Novidades da versao 1.5.20:
+- VEB (piloto): entra a primeira carta de Pedro completa (capitulos 1 a 5).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, Tiago, 1 e 2 Pedro e Judas.
+
+Novidades da versao 1.5.19:
+- VEB (piloto): entra a carta de Tiago completa (capitulos 1 a 5).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, Tiago, 2 Pedro e Judas.
+
+Novidades da versao 1.5.18:
+- VEB (piloto): entra a carta aos Hebreus completa (capitulos 1 a 13).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, Hebreus, 2 Pedro e Judas.
+
+Novidades da versao 1.5.17:
+- VEB (piloto): entra a carta a Filemom completa (capitulo unico).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, Filemom, 2 Pedro e Judas.
+
+Novidades da versao 1.5.16:
+- VEB (piloto): entra a carta a Tito completa (capitulos 1 a 3).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, Tito, 2 Pedro e Judas.
+
+Novidades da versao 1.5.15:
+- VEB (piloto): entra a segunda carta a Timoteo completa (capitulos 1 a 4).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 e 2 Timoteo, 2 Pedro e Judas.
+
+Novidades da versao 1.5.14:
+- VEB (piloto): entra a primeira carta a Timoteo completa (capitulos 1 a 6).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 1 Timoteo, 2 Pedro e Judas.
+
+Novidades da versao 1.5.13:
+- VEB (piloto): entra a segunda carta aos Tessalonicenses completa (capitulos 1 a 3).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 e 2 Tessalonicenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.12:
+- VEB (piloto): entra a primeira carta aos Tessalonicenses completa (capitulos 1 a 5).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 1 Tessalonicenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.11:
+- VEB (piloto): entra a carta aos Colossenses completa (capitulos 1 a 4).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, Colossenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.10:
+- VEB (piloto): entra a carta aos Efesios completa (capitulos 1 a 6).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Efesios, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.9:
+- VEB (piloto): entra a carta aos Galatas completa (capitulos 1 a 6).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Galatas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.8:
+- VEB (piloto): entra a segunda carta aos Corintios completa (capitulos 1 a 13).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 e 2 Corintios, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.7:
+- VEB (piloto): entra a primeira carta aos Corintios completa (capitulos 1 a 16).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, 1 Corintios, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.6:
+- VEB (piloto): entra a carta aos Romanos completa (capitulos 1 a 16).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Romanos, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.5:
+- VEB (piloto): entra o livro de Atos dos Apostolos completo (capitulos 1 a 28).
+  A VEB agora tem o Antigo Testamento inteiro, mais os quatro Evangelhos, Atos, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.4:
+- VEB (piloto): entra o Evangelho de Joao completo (capitulos 1 a 21). Os quatro Evangelhos estao completos.
+  A VEB agora tem o Antigo Testamento inteiro, mais Mateus, Marcos, Lucas, Joao, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.3:
+- VEB (piloto): entra o Evangelho de Lucas completo (capitulos 1 a 24).
+  A VEB agora tem o Antigo Testamento inteiro, mais Mateus, Marcos, Lucas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.2:
+- VEB (piloto): entra o Evangelho de Marcos completo (capitulos 1 a 16, inclusive o final 16:9-20 do TR).
+  A VEB agora tem o Antigo Testamento inteiro, mais Mateus, Marcos, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.5.1:
+- Novos modos de leitura (caixa "Leitura" em cada aba), baseados no codigo 1.5.0:
+  versiculo por versiculo, texto corrido, leitura em paragrafos e livro aberto (duas paginas).
+  O modo escolhido fica salvo nas preferencias.
+- Leitura em paragrafos com os paragrafos REAIS do texto hebraico: as marcas pe e samekh
+  do Codice de Leningrado (WLC/OSHB), em data\paragrafos.txt (3127 inicios de paragrafo no AT).
+  O Textus Receptus do NT nao tem marcas de paragrafo; nesses livros o texto aparece corrido,
+  com um aviso. (A 1.5.0 quebrava a cada 4 versiculos, sem relacao com o texto.)
+- Livro aberto: paginas nas cores do tema escolhido; paginacao medida pela area real da pagina,
+  com barra de rolagem de seguranca (nenhum texto fica cortado); repagina so quando o
+  redimensionamento da janela termina; setas e PageUp/PageDown viram as folhas sem precisar
+  clicar na pagina; palavras buscadas e o versiculo aberto ficam destacados tambem neste modo.
+- Margens na area de leitura; barras de botoes com altura automatica, quebrando linha em
+  janelas estreitas.
+- Correcao: o autoteste voltou a testar o modo texto corrido e nao depende mais das
+  preferencias salvas.
+- VEB (piloto): em Mateus 11:23 e 16:18, o grego hades passa a ser "Seol", como no AT.
+
+Novidades da versao 1.4.47:
+- VEB (piloto): entra o Evangelho de Mateus completo (capitulos 1 a 28), primeiro livro do NT depois do AT completo.
+  A VEB agora tem o Antigo Testamento inteiro, mais Mateus, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.46:
+- VEB (piloto): entra o livro de Malaquias completo (capitulos 1 a 4).
+  Com isso a VEB tem o Antigo Testamento inteiro (39 livros), mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.45:
+- VEB (piloto): entra o livro de Zacarias completo (capitulos 1 a 14).
+  A VEB agora tem do Genesis a Zacarias, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.44:
+- VEB (piloto): entra o livro de Ageu completo (capitulos 1 e 2).
+  A VEB agora tem do Genesis a Ageu, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.43:
+- VEB (piloto): entra o livro de Sofonias completo (capitulos 1 a 3).
+  A VEB agora tem do Genesis a Sofonias, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.42:
+- VEB (piloto): entra o livro de Habacuque completo (capitulos 1 a 3).
+  A VEB agora tem do Genesis a Habacuque, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.41:
+- VEB (piloto): entra o livro de Naum completo (capitulos 1 a 3).
+  A VEB agora tem do Genesis a Naum, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.40:
+- VEB (piloto): entra o livro de Miqueias completo (capitulos 1 a 7), harmonizado com Isaias 2 e Jeremias 26.
+  A VEB agora tem do Genesis a Miqueias, mais Filipenses, 2 Pedro e Judas.
+- VEB: Isaias 2:4 passa a dizer "relhas de arado" (como Joel 3:10 e Miqueias 4:3).
+
+Novidades da versao 1.4.39:
+- VEB (piloto): entra o livro de Obadias completo, harmonizado com Jeremias 49.
+  A VEB agora tem do Genesis a Obadias e Jonas, mais Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.38:
+- VEB (piloto): entra o livro de Amos completo (capitulos 1 a 9).
+  A VEB agora tem do Genesis a Amos (com Joel), mais Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.37:
+- VEB (piloto): entra o livro de Oseias completo (capitulos 1 a 14).
+  A VEB agora tem do Genesis a Oseias, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.36:
+- VEB (piloto): entra o livro de Daniel completo (capitulos 1 a 12, hebraico e aramaico).
+  A VEB agora tem do Genesis a Daniel, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.35:
+- VEB (piloto): entra o livro de Ezequiel completo (capitulos 1 a 48).
+  A VEB agora tem do Genesis a Ezequiel, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.34:
+- VEB (piloto): entra o livro de Lamentacoes completo (capitulos 1 a 5).
+  A VEB agora tem do Genesis a Lamentacoes, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.33:
+- VEB (piloto): entra o livro de Jeremias completo (capitulos 1 a 52).
+  O capitulo 52 foi harmonizado com 2 Reis 24 e 25, e o capitulo 48 com Isaias 15, 16 e 24.
+  A VEB agora tem do Genesis a Jeremias, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.32:
+- VEB (piloto): entra o livro de Isaias completo (capitulos 1 a 66), o primeiro dos profetas maiores.
+  Os capitulos 36 a 39 foram harmonizados com 2 Reis 18 a 20.
+  Correcao: em 2 Reis e 2 Cronicas, "Isaias, filho de Amos" passou a "filho de Amoz".
+  A VEB agora tem do Genesis a Isaias, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.31:
+- VEB (piloto): entra o livro de Cantares completo (capitulos 1 a 8).
+  A VEB agora tem do Genesis a Cantares (todos os livros historicos e poeticos), mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.30:
+- VEB (piloto): entra o livro de Eclesiastes completo (capitulos 1 a 12).
+  A VEB agora tem o Pentateuco, os livros historicos de Josue a Ester, Jo, Salmos, Proverbios e Eclesiastes, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.29:
+- VEB (piloto): entra o livro de Proverbios completo (capitulos 1 a 31).
+  A VEB agora tem o Pentateuco, os livros historicos de Josue a Ester, Jo, Salmos e Proverbios, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.28:
+- VEB (piloto): entra o livro de Salmos completo (150 salmos). Os titulos dos salmos aparecem entre < > no inicio do versiculo 1.
+  Correcao em Jo: o hebraico Sheol agora e "Seol" (antes "sepultura"), conforme o guia de estilo.
+  A VEB agora tem o Pentateuco, os livros historicos de Josue a Ester, Jo e Salmos, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.27:
+- VEB (piloto): entra o livro de Jo completo (capitulos 1 a 42), o primeiro dos livros poeticos.
+  A VEB agora tem o Pentateuco, os livros historicos de Josue a Ester e Jo, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.26:
+- VEB (piloto): entra o livro de Ester completo (capitulos 1 a 10).
+  A VEB agora tem o Pentateuco e os livros historicos de Josue a Ester, mais Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.25:
+- VEB (piloto): entra o livro de Neemias completo (capitulos 1 a 13).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 e 2 Reis, 1 e 2 Cronicas, Esdras, Neemias, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.24:
+- VEB (piloto): entra o livro de Esdras completo (capitulos 1 a 10).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 e 2 Reis, 1 e 2 Cronicas, Esdras, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.23:
+- VEB (piloto): entra o livro de 2 Cronicas completo (capitulos 1 a 36).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 e 2 Reis, 1 e 2 Cronicas, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.22:
+- VEB (piloto): entra o livro de 1 Cronicas completo (capitulos 1 a 29).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 e 2 Reis, 1 Cronicas, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.21:
+- VEB (piloto): entra o livro de 2 Reis completo (capitulos 1 a 25).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 e 2 Reis, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.20:
+- VEB (piloto): entra o livro de 1 Reis completo (capitulos 1 a 22).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, 1 Reis, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.19:
+- VEB (piloto): entra o livro de 2 Samuel completo (capitulos 1 a 24).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 e 2 Samuel, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.18:
+- VEB (piloto): entra o livro de 1 Samuel completo (capitulos 1 a 31).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, 1 Samuel, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.17:
+- VEB (piloto): entra o livro de Rute completo (capitulos 1 a 4).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Rute, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.16:
+- VEB (piloto): entra o livro de Juizes completo (capitulos 1 a 21).
+  A VEB agora tem o Pentateuco, Josue, Juizes, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.15:
+- VEB (piloto): entra o livro de Josue completo (capitulos 1 a 24).
+  A VEB agora tem o Pentateuco, Josue, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.14:
+- VEB (piloto): entra o livro de Deuteronomio completo (capitulos 1 a 34);
+  com ele o Pentateuco (Genesis a Deuteronomio) esta completo.
+  A VEB agora tem Genesis, Exodo, Levitico, Numeros, Deuteronomio, Joel, Jonas,
+  Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.13:
+- VEB (piloto): entra o livro de Numeros completo (capitulos 1 a 36).
+  A VEB agora tem Genesis, Exodo, Levitico, Numeros, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.12:
+- VEB (piloto): entra o livro de Levitico completo (capitulos 1 a 27).
+  A VEB agora tem Genesis, Exodo, Levitico, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.11:
+- VEB (piloto): entra o livro de Exodo completo (capitulos 1 a 40).
+  A VEB agora tem Genesis, Exodo, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+- VEB: Joel 2:13 e Jonas 4:2 harmonizados com Exodo 34:6 ("misericordioso e compassivo").
+
+Novidades da versao 1.4.10:
+- VEB (piloto): Genesis completo (capitulos 1 a 50, ate a morte de Jose).
+  A VEB agora tem Genesis, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.9:
+- VEB (piloto): Genesis chega ao capitulo 36 (Isaque, Jaco e Esau).
+  A VEB agora tem Genesis 1-36, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.8:
+- VEB (piloto): Genesis chega ao capitulo 25 (historia de Abraao).
+
+Novidades da versao 1.4.7:
+- VEB (piloto): entra Genesis 1 a 11 (a traducao segue em ordem canonica, em blocos).
+  A VEB agora tem Genesis 1-11, Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.6:
+- VEB (piloto): entra 2 Pedro, harmonizada com Judas (os trechos paralelos tem a mesma redacao).
+  A VEB agora tem Joel, Jonas, Filipenses, 2 Pedro e Judas.
+
+Novidades da versao 1.4.5:
+- VEB (piloto): entra a epistola de Judas. A VEB agora tem Joel, Jonas, Filipenses e Judas.
+- VEB: "medo" quando o texto fala de medo, e "temor" para a reverencia a Deus.
+
+Novidades da versao 1.4.4:
+- VEB (piloto): entra o livro de Joel. A VEB agora tem Joel, Jonas e Filipenses.
+
+Novidades da versao 1.4.3:
+- Nova versao de teste: VEB - Versao Estudo Biblico (piloto), traducao propria feita
+  diretamente do hebraico (Texto Massoretico) e do grego (Textus Receptus). Por enquanto
+  contem so Jonas e Filipenses; os demais livros entram conforme forem traduzidos.
+
+Novidades da versao 1.4.2:
+- Somente versoes livres: Biblia Livre (BLIVRE), Almeida 1911, King James (ingles),
+  Reina-Valera 1909 (espanhol) e Louis Segond 1910 (frances).
+- Saem a Traducao Brasileira 2010 (direitos da SBB; a TB 1917 completa nao existe em formato
+  digital) e a Reina-Valera 1960 (direitos das Sociedades Biblicas Unidas).
+- Entra a Reina-Valera 1909, de dominio publico (texto do eBible.org).
+
+Novidades da versao 1.4.1:
+- Abre bem mais rapido: os textos biblicos agora ficam em data\biblias.txt (um versiculo por
+  linha, campos separados por TAB) e as versoes sao carregadas em paralelo.
+
+Novidades da versao 1.4.0:
+- Versoes incluidas: Biblia Livre (BLIVRE), Traducao Brasileira (TB), Almeida 1911, King James (ingles),
+  Reina-Valera 1960 (espanhol) e Louis Segond 1910 (frances). A ACF foi retirada.
+- O programa lembra a ultima versao escolhida. As abas mostram a sigla da versao.
+- Corrigido: na King James, os livros do Antigo Testamento apareciam na caixa do Novo
+  Testamento e o filtro "no Antigo Testamento" nao funcionava.
+- Observacao: a Almeida 1911 usa a ortografia da epoca ("Christo", "creou", "sancto").
+  Para buscar nela, use a grafia antiga.
+
+Novidades da versao 1.3.6:
+- Na lista "Referencias e textos encontrados", o termo buscado aparece destacado em amarelo.
+- Novo dicionario de sinonimos (data\sinonimos.csv, cerca de 230 termos, vale nos dois sentidos:
+  "gozo" sugere "alegria" e vice-versa).
+- "Sugestoes por": escolha Dicionario analogico (termos relacionados), Sinonimos ou Ambos.
+  A busca Flexivel usa a fonte escolhida.
+- Os dois dicionarios sao arquivos de texto: da para acrescentar termos (termo,palavra1|palavra2).
+
+Novidades da versao 1.3.5:
+- Ao abrir um resultado da busca, ficam destacadas so as palavras procuradas (no capitulo
+  inteiro), e nao mais o versiculo todo. O numero do versiculo encontrado tambem fica marcado.
+- Varias abas de passagens abertas ao mesmo tempo:
+  * Ctrl+clique no resultado, ou botao direito > "Abrir em nova aba";
+  * ou marque "Abrir cada passagem em uma nova aba" no Indice Digital;
+  * cada aba guarda a sua versao (da para comparar ACF e KJV lado a lado);
+  * fechar: botao "Fechar aba", clique do meio na aba ou botao direito na aba.
+
+Novidades da versao 1.3.4:
+- Barra de aparencia no capitulo aberto: modo de leitura, fonte (Georgia, Cambria, Times,
+  Palatino, Segoe UI, Calibri, Verdana e outras), tamanho de 8 a 32 pt e tema de cor.
+- 9 temas: Branco, Creme, Sepia, Cinza claro, Amarelo suave, Verde suave, Azul noite,
+  Preto e Alto contraste (fundo, texto, numeros e destaque combinando).
+- Botao "Padrao" volta para a aparencia original.
+- As preferencias ficam salvas e voltam na proxima vez que o programa abrir
+  (%LOCALAPPDATA%\BibliaDigital\preferencias.ini).
+
+Novidades da versao 1.3.3:
+- Modo de leitura no capitulo aberto: "Versiculo por versiculo" (numerado, um por paragrafo)
+  ou "Texto corrido (carta)" (sem numeros nem divisoes, como uma carta). A escolha vale
+  para os proximos capitulos ate ser trocada.
+
+Novidades da versao 1.3.2:
+- Busca Exata agora procura palavras inteiras: "amor" nao traz mais "amorreus".
+- Exata e Flexivel nao ficam mais marcadas juntas: marcar uma desmarca a outra.
+  (Busca imediata continua independente.) Na Exata, o operador E/OU fica desativado.
+
+Novidades da versao 1.3.1:
+- Programa com icone, descricao, empresa e copyright (Propriedades > Detalhes).
+- Manifesto do Windows: roda como usuario comum, nunca pede administrador.
+- Log de erros agora em %LOCALAPPDATA%\BibliaDigital\erro.log (antes ficava solto em %TEMP%).
+- ZIP gerado no formato padrao (o anterior tinha caminhos fora do padrao).
+
+Novidades da versao 1.3.0:
+- Programa nativo .exe: abre em cerca de 1 segundo.
+- Busca instantanea (centesimos de segundo).
+- Corrigido o erro "Os tipos de argumento nao correspondem" ao buscar.
+- Busca Flexivel: E/OU vale entre as palavras digitadas; os sinonimos entram como alternativas.
+- Mudar A+/A- ou a cor de fundo atualiza o capitulo que esta aberto.
+- Erros aparecem em uma mensagem clara e ficam salvos em %LOCALAPPDATA%\BibliaDigital\erro.log.
