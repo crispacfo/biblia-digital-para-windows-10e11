@@ -1,4 +1,4 @@
-﻿// Biblia Digital Windows 11 - versao 1.8.1
+﻿// Biblia Digital Windows 11 - versao 1.9.2
 // Programa nativo (.exe) em C# / Windows Forms, sem PowerShell, sem navegador e sem Python.
 // Dados offline em data\biblias.txt, data\dicionario_analogico.csv e data\sinonimos.csv.
 // Compilar: compilar.bat (usa o compilador C# que ja vem com o .NET Framework 4 do Windows).
@@ -24,14 +24,57 @@ using System.Windows.Forms;
 [assembly: System.Reflection.AssemblyCopyright("Copyright (c) 2026 Estudo Bíblico - estudobiblico.org")]
 [assembly: System.Reflection.AssemblyTrademark("")]
 [assembly: System.Reflection.AssemblyCulture("")]
-[assembly: System.Reflection.AssemblyVersion("1.8.1.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.8.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersion("1.8.1")]
+[assembly: System.Reflection.AssemblyVersion("1.9.2.0")]
+[assembly: System.Reflection.AssemblyFileVersion("1.9.2.0")]
+[assembly: System.Reflection.AssemblyInformationalVersion("1.9.2")]
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: System.Runtime.InteropServices.Guid("6b3f2c1e-9a4d-4e8b-b7c2-1f5d8a0e3c47")]
 
 namespace BibliaDigital
 {
+    // Formatacao de paragrafo do RichEdit (justificar, recuo da primeira linha, entrelinha, espaco antes),
+    // que o RichTextBox do .NET nao expoe.
+    static class ParaFormat
+    {
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        struct PARAFORMAT2
+        {
+            public int cbSize; public uint dwMask; public short wNumbering; public short wEffects;
+            public int dxStartIndent; public int dxRightIndent; public int dxOffset;
+            public short wAlignment; public short cTabCount;
+            [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, SizeConst = 32)] public int[] rgxTabs;
+            public int dySpaceBefore; public int dySpaceAfter; public int dyLineSpacing;
+            public short sStyle; public byte bLineSpacingRule; public byte bOutlineLevel;
+            public short wShadingWeight; public short wShadingStyle; public short wNumberingStart; public short wNumberingStyle;
+            public short wNumberingTab; public short wBorderSpace; public short wBorderWidth; public short wBorders;
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref PARAFORMAT2 lParam);
+
+        const int EM_SETPARAFORMAT = 0x447;
+        const uint PFM_STARTINDENT = 0x1, PFM_OFFSET = 0x4, PFM_ALIGNMENT = 0x8, PFM_SPACEBEFORE = 0x40, PFM_SPACEAFTER = 0x80, PFM_LINESPACING = 0x100;
+        public const short Left = 1, Justify = 4;
+
+        // Aplica aos paragrafos que tocam [start, start+length). Medidas em twips (1/1440 pol.).
+        // lineRule20: entrelinha em vintavos de linha (20 = simples, 23 = 1,15, 26 = 1,3, 30 = 1,5).
+        public static void Apply(RichTextBox rtb, int start, int length, short align, int firstIndent, int offset, int spaceBefore, int lineRule20)
+        {
+            if (length < 0) return;
+            IntPtr handle = rtb.Handle; // cria a janela do controle, se ainda nao existir
+            PARAFORMAT2 pf = new PARAFORMAT2();
+            pf.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(PARAFORMAT2));
+            pf.rgxTabs = new int[32];
+            pf.dwMask = PFM_ALIGNMENT | PFM_STARTINDENT | PFM_OFFSET | PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING;
+            pf.wAlignment = align;
+            pf.dxStartIndent = firstIndent; pf.dxOffset = offset;
+            pf.dySpaceBefore = spaceBefore; pf.dySpaceAfter = 0;
+            pf.bLineSpacingRule = 5; pf.dyLineSpacing = Math.Max(20, lineRule20);
+            rtb.Select(start, length);
+            SendMessage(rtb.Handle, EM_SETPARAFORMAT, IntPtr.Zero, ref pf);
+        }
+    }
+
     class Book
     {
         public int Id;
@@ -141,8 +184,9 @@ namespace BibliaDigital
         }
     }
 
-    // Inicios de paragrafo (marcas pe/samekh do Codice de Leningrado), so para exibicao.
-    // Livros sem dados (o TR do NT nao tem paragrafos) ficam sem quebras.
+    // Inicios de paragrafo, so para exibicao: AT pelas marcas pe/samekh do Codice de Leningrado;
+    // NT pela divisao do SBL Greek New Testament (SBLGNT, CC BY 4.0), aplicada por referencia ao nosso texto.
+    // Livros sem dados (ex.: versoes importadas com outra numeracao) ficam sem quebras.
     static class Paragraphs
     {
         static readonly HashSet<int> starts = new HashSet<int>();
@@ -1042,6 +1086,14 @@ namespace BibliaDigital
         int readingMode = 0; // 0 versiculos, 1 texto corrido, 2 paragrafos, 3 livro aberto
         string readerFontName = "Georgia";
         int themeIndex = 0;
+        // Diagramacao dos modos de rolagem (versiculos, corrido, paragrafos).
+        bool justifyText = true;
+        int lineSpacingIndex = 1;  // 0 simples, 1 = 1,15, 2 = 1,3, 3 = 1,5
+        int columnIndex = 1;       // largura da coluna: 0 estreita, 1 media, 2 larga, 3 toda a janela
+        static readonly string[] LineSpacingNames = { "Simples", "1,15", "1,3", "1,5" };
+        static readonly int[] LineSpacingRule = { 20, 23, 26, 30 };
+        static readonly string[] ColumnNames = { "Estreita (65 letras)", "Media (80 letras)", "Larga (100 letras)", "Toda a janela" };
+        static readonly int[] ColumnChars = { 65, 80, 100, 0 };
         bool syncingUi = false;
         public bool NoSave = false; // autoteste nao grava preferencias
 
@@ -1139,7 +1191,7 @@ namespace BibliaDigital
 
         void BuildUi()
         {
-            Text = "Biblia Digital - Windows 11 v1.8.1";
+            Text = "Biblia Digital - Windows 11 v1.9.2";
             StartPosition = FormStartPosition.CenterScreen;
             Size = new Size(1120, 780); // espaco para o rodape sem cortar o quadro de Busca
             MinimumSize = new Size(950, 720);
@@ -1387,14 +1439,23 @@ namespace BibliaDigital
             };
         }
 
-        // ---- Rodape: propriedade, distribuicao e direitos dos textos (visivel em todas as abas) ----
+        // ---- Rodape: uma linha com a propriedade, o portal e o link para os creditos completos ----
+        // (os creditos e licencas de cada texto ficam na janela "Creditos e direitos dos textos").
 
         public const string PortalUrl = "http://estudobiblico.org";
+        public const string CreditsLink = "Créditos e direitos dos textos";
+        public const string FooterText = "Bíblia Digital © 2026 Estudo Bíblico — distribuição livre e gratuita.   Portal: " + PortalUrl + "   ·   " + CreditsLink;
         public static readonly string[] FooterLines =
         {
             "Bíblia Digital © 2026 Estudo Bíblico — distribuição livre e gratuita autorizada. Portal: " + PortalUrl,
-            "Versões incluídas de uso livre: Almeida 1911, King James, Reina-Valera 1909 e Louis Segond 1910 (domínio público) e Bíblia Livre (licença CC BY 3.0 BR).",
-            "A VEB — Versão Estudo Bíblico pertence ao Estudo Bíblico. Versões importadas pelo usuário seguem os direitos de seus próprios autores."
+            "Versões incluídas de uso livre: Almeida 1911 (original e com ortografia atualizada), King James, Reina-Valera 1909 e Louis Segond 1910 (domínio público) e Bíblia Livre (licença CC BY 3.0 BR).",
+            "Almeida 1911 (ortografia atualizada): só a grafia foi atualizada pelo Estudo Bíblico (2026), mantendo vocabulário e gramática de 1911; o texto continua em domínio público.",
+            "A VEB — Versão Estudo Bíblico pertence ao Estudo Bíblico. Versões importadas pelo usuário seguem os direitos de seus próprios autores.",
+            "Parágrafos do Novo Testamento: SBL Greek New Testament (SBLGNT), © 2010 Society of Biblical Literature e Logos Bible Software, licença CC BY 4.0 (https://sblgnt.com). Só a divisão em parágrafos, aplicada por referência e adaptada; o SBL e a Logos não endossam esta adaptação.",
+            "Parágrafos do Antigo Testamento e texto-base da VEB no AT: Westminster Leningrad Codex, via Open Scriptures Hebrew Bible, licença CC BY 4.0.",
+            "",
+            "Bíblia Livre: © Diego Santos, Mário Sérgio e Marco Teles, Creative Commons Atribuição 3.0 Brasil (http://creativecommons.org/licenses/by/3.0/br/). Nesta edição foram corrigidos erros de digitação e de acentuação, sem mudar a tradução.",
+            "Veja também LICENCA.txt e LEIA-ME.txt, que acompanham o programa."
         };
 
         Control BuildFooter()
@@ -1407,11 +1468,13 @@ namespace BibliaDigital
             text.TextAlign = ContentAlignment.MiddleCenter;
             text.Font = new Font("Segoe UI", 8.25f);
             text.ForeColor = SystemColors.ControlDarkDark;
-            text.Text = string.Join("\r\n", FooterLines);
-            int at = text.Text.IndexOf(PortalUrl, StringComparison.Ordinal);
-            text.LinkArea = new LinkArea(at, PortalUrl.Length);
+            text.Text = FooterText;
+            text.Links.Clear();
+            text.Links.Add(text.Text.IndexOf(PortalUrl, StringComparison.Ordinal), PortalUrl.Length, "portal");
+            text.Links.Add(text.Text.IndexOf(CreditsLink, StringComparison.Ordinal), CreditsLink.Length, "creditos");
             text.LinkClicked += (s, e) =>
             {
+                if ((string)e.Link.LinkData == "creditos") { ShowCredits(); return; }
                 try { Process.Start(new ProcessStartInfo(PortalUrl) { UseShellExecute = true }); }
                 catch (Exception ex) { MessageBox.Show(this, "Nao foi possivel abrir o navegador: " + ex.Message + "\r\nEndereco: " + PortalUrl, "Biblia Digital"); }
             };
@@ -1426,6 +1489,23 @@ namespace BibliaDigital
             // Linha fina separando o rodape do conteudo.
             footer.Paint += (s, e) => e.Graphics.DrawLine(SystemPens.ControlDark, 0, 0, footer.Width, 0);
             return footer;
+        }
+
+        void ShowCredits()
+        {
+            using (Form f = new Form())
+            {
+                f.Text = "Créditos e direitos dos textos - Bíblia Digital";
+                f.StartPosition = FormStartPosition.CenterParent; f.Size = new Size(720, 460); f.MinimumSize = new Size(480, 300);
+                f.ShowInTaskbar = false; f.MinimizeBox = false; f.MaximizeBox = false; f.Font = Font;
+                TextBox t = new TextBox(); t.Multiline = true; t.ReadOnly = true; t.ScrollBars = ScrollBars.Vertical; t.Dock = DockStyle.Fill;
+                t.Font = new Font("Segoe UI", 9.5f); t.BackColor = SystemColors.Window;
+                t.Text = string.Join("\r\n", FooterLines);
+                Button ok = MakeButton("Fechar"); ok.Dock = DockStyle.Bottom; ok.Height = 34; ok.DialogResult = DialogResult.OK;
+                f.Controls.Add(t); f.Controls.Add(ok); f.AcceptButton = ok; f.CancelButton = ok;
+                f.Shown += delegate { t.SelectionLength = 0; };
+                f.ShowDialog(this);
+            }
         }
 
         // ---- Versoes: importar e remover ----
@@ -1716,6 +1796,7 @@ namespace BibliaDigital
             readingMode = 0;
             readerFontName = "Georgia";
             readerFontSize = 12; resultFontSize = 9;
+            justifyText = true; lineSpacingIndex = 1; columnIndex = 1;
             SetTheme(0);
             ApplyFonts();
         }
@@ -1760,6 +1841,9 @@ namespace BibliaDigital
                         case "sugestoes": suggestSource = val == "sinonimos" ? 1 : val == "ambos" ? 2 : 0; break;
                         case "versao": savedVersionKey = val; break;
                         case "ultima": lastRead = val; break;
+                        case "justificar": justifyText = val != "0"; break;
+                        case "entrelinha": if (int.TryParse(val, out n)) lineSpacingIndex = Math.Max(0, Math.Min(LineSpacingRule.Length - 1, n)); break;
+                        case "coluna": if (int.TryParse(val, out n)) columnIndex = Math.Max(0, Math.Min(ColumnChars.Length - 1, n)); break;
                     }
                 }
             }
@@ -1781,7 +1865,10 @@ namespace BibliaDigital
                     "novas_abas=" + (openInNewTab ? "1" : "0") + "\r\n" +
                     "sugestoes=" + (suggestSource == 1 ? "sinonimos" : suggestSource == 2 ? "ambos" : "analogico") + "\r\n" +
                     "versao=" + (current != null ? current.Key : "") + "\r\n" +
-                    "ultima=" + lastRead + "\r\n", Encoding.UTF8);
+                    "ultima=" + lastRead + "\r\n" +
+                    "justificar=" + (justifyText ? "1" : "0") + "\r\n" +
+                    "entrelinha=" + lineSpacingIndex + "\r\n" +
+                    "coluna=" + columnIndex + "\r\n", Encoding.UTF8);
             }
             catch { }
         }
@@ -1979,6 +2066,10 @@ namespace BibliaDigital
             tab.Title.Font = new Font("Segoe UI", 13, FontStyle.Bold);
             tab.Title.AutoSize = true;
             tab.Title.Margin = new Padding(18, 8, 0, 0);
+            // O titulo e o seletor: clique abre a grade de livros, capitulos e versiculos.
+            tab.Title.Cursor = Cursors.Hand;
+            tip.SetToolTip(tab.Title, "Clique para escolher outro livro, capitulo ou versiculo");
+            tab.Title.Click += delegate { ShowPicker(tab); };
             bar.Controls.Add(btnBack); bar.Controls.Add(btnPrev); bar.Controls.Add(btnNext); bar.Controls.Add(btnClose); bar.Controls.Add(tab.Title);
 
             // Barra de aparencia: modo de leitura, fonte, tamanho e tema de cor (valem para todas as abas).
@@ -2014,6 +2105,11 @@ namespace BibliaDigital
             look.Controls.Add(barLabel("Fonte:")); look.Controls.Add(tab.FontBox);
             look.Controls.Add(barLabel("Tamanho:")); look.Controls.Add(btnSmaller); look.Controls.Add(tab.Size); look.Controls.Add(btnBigger);
             look.Controls.Add(barLabel("Tema:")); look.Controls.Add(tab.ThemeBox);
+            Button btnFormat = MakeButton("Formato ▾"); btnFormat.Width = 82; btnFormat.Height = 26;
+            btnFormat.Margin = new Padding(10, 3, 0, 0);
+            tip.SetToolTip(btnFormat, "Justificar, entrelinha e largura da coluna de texto");
+            btnFormat.Click += delegate { FormatMenu().Show(btnFormat, new Point(0, btnFormat.Height)); };
+            look.Controls.Add(btnFormat);
             look.Controls.Add(btnReset);
 
             tab.Reader = new RichTextBox();
@@ -2027,6 +2123,7 @@ namespace BibliaDigital
             tab.ReadingHost.Padding = new Padding(20, 12, 20, 12);
             layout.Controls.Add(tab.ReadingHost, 0, 2);
             tab.ReadingHost.Controls.Add(tab.Reader);
+            tab.ReadingHost.Resize += delegate { ApplyColumn(tab); };
             tab.BookLayout = new TableLayoutPanel();
             tab.BookLayout.Dock = DockStyle.Fill; tab.BookLayout.ColumnCount = 2; tab.BookLayout.RowCount = 2;
             tab.BookLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
@@ -2870,7 +2967,7 @@ namespace BibliaDigital
 
             string suffix = versions.Count > 1 ? " (" + ver.Abbr + ")" : "";
             tab.Page.Text = book.Name + " " + tab.Chapter + suffix;
-            tab.Title.Text = book.Name + " - Capitulo " + tab.Chapter + suffix;
+            tab.Title.Text = book.Name + " " + tab.Chapter + suffix + "  ▾";
 
             syncingUi = true;
             try
@@ -2887,32 +2984,40 @@ namespace BibliaDigital
             tab.Reader.Visible = !bookMode;
             tab.BookLayout.Visible = bookMode;
             tab.ReadingHost.BackColor = bookMode ? DeskColor() : BackgroundColor();
+            ApplyColumn(tab);
             if (bookMode) { RenderBook(tab, false); return; }
+            // Sem a janela do controle, o RichEdit ignora a fonte escolhida antes de cada AppendText.
+            IntPtr readerHandle = rtb.Handle;
             rtb.Clear();
             rtb.Font = new Font(readerFontName, readerFontSize);
             rtb.BackColor = BackgroundColor();
             rtb.ForeColor = ForegroundColor();
             rtb.ZoomFactor = 1f;
 
-            Font titleFont = new Font(readerFontName, readerFontSize + 3, FontStyle.Bold);
+            Font titleFont = new Font(readerFontName, readerFontSize + 1, FontStyle.Bold);
             Font numFont = new Font(readerFontName, Math.Max(6, readerFontSize - 1), FontStyle.Bold);
             Font bodyFont = new Font(readerFontName, readerFontSize);
+            // Numero sobrescrito do modo paragrafos e numero grande do capitulo (capitular).
+            Font supFont = new Font(readerFontName, Math.Max(6f, (float)Math.Round(readerFontSize * 0.62f)), FontStyle.Bold);
+            int supOffset = Math.Max(2, (int)Math.Round(readerFontSize * 0.45f));
+            Font dropFont = new Font(readerFontName, Math.Max(16f, readerFontSize * 2.4f), FontStyle.Bold);
 
-            rtb.SelectionFont = titleFont;
-            rtb.SelectionColor = AccentColor();
-            rtb.AppendText(book.Name + " - Capitulo " + tab.Chapter + "\r\n\r\n");
+            // Cabecalho: nome do livro em maiusculas, discreto, como o titulo corrido de uma Biblia impressa.
+            Put(rtb, book.Name.ToUpperInvariant() + "\r\n", titleFont, AccentColor(), 0);
+            if (readingMode == 2 && !Paragraphs.HasBook(tab.BookId))
+            {
+                Put(rtb, "(O texto-fonte deste livro nao tem marcas de paragrafo; exibido como texto corrido.)\r\n", numFont, AccentColor(), 0);
+            }
+            int bodyStart = rtb.TextLength;
+            // Numero do capitulo grande: no inicio do primeiro paragrafo (corrido e paragrafos) ou numa linha propria (versiculos).
+            Put(rtb, tab.Chapter.ToString() + (readingMode == 0 ? "\r\n" : " "), dropFont, AccentColor(), 0);
+            int firstParaEnd = -1;
 
             // Guarda onde cada versiculo comecou, para destacar depois.
             List<KeyValuePair<int, Verse>> placed = new List<KeyValuePair<int, Verse>>();
             int targetStart = -1, targetEnd = -1, numStart = -1, numLen = 0;
             bool first = true;
             bool realParagraphs = Paragraphs.HasBook(tab.BookId);
-            if (readingMode == 2 && !realParagraphs)
-            {
-                rtb.SelectionFont = numFont;
-                rtb.SelectionColor = AccentColor();
-                rtb.AppendText("(O texto-fonte deste livro nao tem marcas de paragrafo; exibido como texto corrido.)\r\n\r\n");
-            }
             tab.VerseRanges.Clear();
             Font markerFont = new Font("Segoe UI Symbol", Math.Max(6, readerFontSize - 1));
             foreach (Verse v in ver.GetChapter(tab.BookId, tab.Chapter))
@@ -2921,34 +3026,43 @@ namespace BibliaDigital
                 if (readingMode == 1 || readingMode == 2)
                 {
                     // Texto corrido: sem numeros nem quebras, um paragrafo so, como uma carta.
-                    // Paragrafos: quebra onde o original (Codice de Leningrado) abre paragrafo.
-                    if (!first) rtb.AppendText(readingMode == 2 && realParagraphs && Paragraphs.Starts(tab.BookId, tab.Chapter, v.V) ? "\r\n\r\n" : " ");
+                    // Paragrafos: quebra onde o original abre paragrafo (AT: Codice de Leningrado; NT: SBLGNT),
+                    // com o numero do versiculo pequeno e elevado, como numa Biblia impressa.
+                    if (!first)
+                    {
+                        bool newPara = readingMode == 2 && realParagraphs && Paragraphs.Starts(tab.BookId, tab.Chapter, v.V);
+                        if (newPara && firstParaEnd < 0) firstParaEnd = rtb.TextLength;
+                        Put(rtb, newPara ? "\r\n" : " ", bodyFont, ForegroundColor(), 0);
+                    }
                     first = false;
-                    verseStart = rangeStart = rtb.TextLength;
-                    rtb.SelectionFont = bodyFont;
-                    rtb.SelectionColor = ForegroundColor();
-                    rtb.AppendText(v.T);
+                    rangeStart = rtb.TextLength;
+                    if (readingMode == 2)
+                    {
+                        Put(rtb, v.V.ToString(), supFont, AccentColor(), supOffset);
+                        Put(rtb, " ", supFont, AccentColor(), 0);
+                        if (v.V == tab.Verse) { numStart = rangeStart; numLen = v.V.ToString().Length; }
+                    }
+                    verseStart = rtb.TextLength;
+                    Put(rtb, v.T, bodyFont, ForegroundColor(), 0);
                     AppendMarkers(rtb, tab, v.V, markerFont);
                     if (v.V == tab.Verse) targetStart = verseStart;
                 }
                 else
                 {
                     int n0 = rangeStart = rtb.TextLength;
-                    rtb.SelectionFont = numFont;
-                    rtb.SelectionColor = AccentColor();
-                    rtb.AppendText(v.V + " ");
+                    Put(rtb, v.V + " ", numFont, AccentColor(), 0);
                     verseStart = rtb.TextLength;
-                    rtb.SelectionFont = bodyFont;
-                    rtb.SelectionColor = ForegroundColor();
-                    rtb.AppendText(v.T);
+                    Put(rtb, v.T, bodyFont, ForegroundColor(), 0);
                     AppendMarkers(rtb, tab, v.V, markerFont);
-                    rtb.AppendText("\r\n");
+                    Put(rtb, "\r\n", bodyFont, ForegroundColor(), 0);
                     if (v.V == tab.Verse) { targetStart = n0; numStart = n0; numLen = verseStart - n0 - 1; }
                 }
                 placed.Add(new KeyValuePair<int, Verse>(verseStart, v));
                 tab.VerseRanges.Add(new[] { rangeStart, rtb.TextLength, v.V });
                 if (v.V == tab.Verse) targetEnd = verseStart + v.T.Length;
             }
+
+            FormatParagraphs(tab, bodyStart, firstParaEnd, numFont);
 
             // Marca-texto do usuario (antes dos destaques de busca, que ficam por cima).
             foreach (KeyValuePair<int, Verse> kv in placed)
@@ -2982,6 +3096,235 @@ namespace BibliaDigital
             rtb.ScrollToCaret();
         }
 
+        // ---- Diagramacao dos modos de rolagem ----
+
+        // Paragrafos com recuo na primeira linha (sem linha em branco), texto justificado e entrelinha;
+        // no modo versiculos, recuo deslocado: as linhas que continuam o versiculo alinham depois do numero.
+        void FormatParagraphs(PassageTab tab, int bodyStart, int firstParaEnd, Font numFont)
+        {
+            RichTextBox rtb = tab.Reader;
+            short align = justifyText ? ParaFormat.Justify : ParaFormat.Left;
+            int rule = LineSpacingRule[lineSpacingIndex];
+            int indent = readerFontSize * 30;            // 1,5 eme, em twips
+            int gap = (int)(readerFontSize * 20 * 0.45); // pouco espaco antes do paragrafo, em twips
+            int end = rtb.TextLength;
+            // Cabecalho (nome do livro): sem justificar e sem recuo.
+            ParaFormat.Apply(rtb, 0, Math.Max(0, bodyStart - 1), ParaFormat.Left, 0, 0, 0, 20);
+            if (readingMode == 2)
+            {
+                ParaFormat.Apply(rtb, bodyStart, end - bodyStart, align, indent, -indent, gap, rule);
+                // O primeiro paragrafo comeca com o numero grande do capitulo: sem recuo nem espaco.
+                int fe = firstParaEnd > 0 ? firstParaEnd : end;
+                ParaFormat.Apply(rtb, bodyStart, Math.Max(0, fe - bodyStart - 1), align, 0, 0, 0, rule);
+            }
+            else if (readingMode == 1)
+            {
+                ParaFormat.Apply(rtb, bodyStart, end - bodyStart, align, 0, 0, 0, rule);
+            }
+            else
+            {
+                int hang;
+                using (Graphics g = rtb.CreateGraphics())
+                    hang = (int)(TextRenderer.MeasureText(g, "000 ", numFont, Size.Empty, TextFormatFlags.NoPadding).Width * 1440 / g.DpiX);
+                ParaFormat.Apply(rtb, bodyStart, end - bodyStart, align, 0, hang, (int)(readerFontSize * 20 * 0.2), rule);
+                // Linha do numero grande do capitulo.
+                ParaFormat.Apply(rtb, bodyStart, 1, ParaFormat.Left, 0, 0, 0, 20);
+            }
+        }
+
+        // Largura maxima da coluna de texto: em tela larga o texto fica centralizado com margens.
+        void ApplyColumn(PassageTab tab)
+        {
+            if (tab.ReadingHost == null) return;
+            int side = 20;
+            int chars = ColumnChars[columnIndex];
+            if (readingMode != 3 && chars > 0)
+            {
+                const string sample = "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito ";
+                using (Font f = new Font(readerFontName, readerFontSize))
+                {
+                    double avg = (double)TextRenderer.MeasureText(sample, f).Width / sample.Length;
+                    int col = (int)(avg * chars) + SystemInformation.VerticalScrollBarWidth + 8;
+                    side = Math.Max(20, (tab.ReadingHost.ClientSize.Width - col) / 2);
+                }
+            }
+            Padding p = new Padding(side, 12, side, 12);
+            if (tab.ReadingHost.Padding != p) tab.ReadingHost.Padding = p;
+        }
+
+        ContextMenuStrip FormatMenu()
+        {
+            ContextMenuStrip m = new ContextMenuStrip();
+            Action changed = () => { SaveSettings(); RefreshOpenChapter(); };
+            ToolStripMenuItem just = new ToolStripMenuItem("Justificar o texto", null, delegate { justifyText = !justifyText; changed(); });
+            just.Checked = justifyText;
+            m.Items.Add(just);
+            ToolStripMenuItem sp = new ToolStripMenuItem("Entrelinha");
+            for (int i = 0; i < LineSpacingNames.Length; i++)
+            {
+                int k = i;
+                ToolStripMenuItem it = new ToolStripMenuItem(LineSpacingNames[i], null, delegate { lineSpacingIndex = k; changed(); });
+                it.Checked = i == lineSpacingIndex;
+                sp.DropDownItems.Add(it);
+            }
+            m.Items.Add(sp);
+            ToolStripMenuItem col = new ToolStripMenuItem("Largura da coluna");
+            for (int i = 0; i < ColumnNames.Length; i++)
+            {
+                int k = i;
+                ToolStripMenuItem it = new ToolStripMenuItem(ColumnNames[i], null, delegate { columnIndex = k; changed(); });
+                it.Checked = i == columnIndex;
+                col.DropDownItems.Add(it);
+            }
+            m.Items.Add(col);
+            m.Items.Add(new ToolStripSeparator());
+            ToolStripMenuItem note = new ToolStripMenuItem("Vale para versiculos, texto corrido e paragrafos (o livro aberto tem paginacao propria)");
+            note.Enabled = false;
+            m.Items.Add(note);
+            return m;
+        }
+
+        // ---- Seletor rapido: grade de livros, depois capitulos, depois versiculos ----
+
+        // Grupos de livros com cor propria na grade (como as secoes de uma Biblia impressa).
+        static readonly int[] GroupStart = { 1, 6, 18, 23, 28, 40, 45, 58, 66 };
+        static readonly string[] GroupNames = { "Lei", "Historicos", "Poeticos", "Profetas maiores", "Profetas menores", "Evangelhos e Atos", "Cartas de Paulo", "Cartas gerais", "Profecia" };
+        static readonly Color[] GroupColors =
+        {
+            Color.FromArgb(222, 235, 250), Color.FromArgb(226, 242, 226), Color.FromArgb(250, 238, 214), Color.FromArgb(244, 224, 232),
+            Color.FromArgb(236, 228, 246), Color.FromArgb(214, 236, 240), Color.FromArgb(250, 230, 214), Color.FromArgb(232, 236, 218),
+            Color.FromArgb(238, 226, 226)
+        };
+        static int GroupOf(int bookId)
+        {
+            int g = 0;
+            for (int i = 0; i < GroupStart.Length; i++) if (bookId >= GroupStart[i]) g = i;
+            return g;
+        }
+
+        ToolStripDropDown picker;
+
+        void ShowPicker(PassageTab tab)
+        {
+            if (picker != null) { picker.Close(); picker.Dispose(); }
+            picker = new ToolStripDropDown();
+            picker.Padding = new Padding(4);
+            Panel host = new Panel(); host.BackColor = SystemColors.Window; host.Size = new Size(850, 430);
+            ToolStripControlHost ch = new ToolStripControlHost(host); ch.AutoSize = false; ch.Size = host.Size; ch.Margin = Padding.Empty; ch.Padding = Padding.Empty;
+            picker.Items.Add(ch);
+            FillBookGrid(tab, host);
+            // Abre logo abaixo do titulo, mas dentro da janela (desloca para a esquerda se faltar espaco).
+            Point below = PointToClient(tab.Title.PointToScreen(new Point(0, tab.Title.Height + 2)));
+            int x = Math.Max(8, Math.Min(below.X, ClientSize.Width - host.Width - 16));
+            picker.Show(this, new Point(x, below.Y));
+        }
+
+        FlowLayoutPanel PickerFlow(Panel host, string title, Action back)
+        {
+            host.Controls.Clear();
+            Panel top = new Panel(); top.Dock = DockStyle.Top; top.Height = 34;
+            Label t = new Label(); t.Text = title; t.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold); t.AutoSize = true; t.Location = new Point(back != null ? 96 : 8, 8);
+            top.Controls.Add(t);
+            if (back != null)
+            {
+                Button b = MakeButton("◀ Voltar"); b.Location = new Point(6, 4); b.Size = new Size(82, 26);
+                b.Click += delegate { back(); };
+                top.Controls.Add(b);
+            }
+            FlowLayoutPanel flow = new FlowLayoutPanel(); flow.Dock = DockStyle.Fill; flow.AutoScroll = true; flow.Padding = new Padding(6);
+            host.Controls.Add(flow); host.Controls.Add(top);
+            return flow;
+        }
+
+        void FillBookGrid(PassageTab tab, Panel host)
+        {
+            FlowLayoutPanel flow = PickerFlow(host, "Escolha o livro  (" + tab.Version.Abbr + ")", null);
+            string lastTestament = null;
+            foreach (Book b in tab.Version.Books)
+            {
+                if (b.Testament != lastTestament)
+                {
+                    lastTestament = b.Testament;
+                    Label sec = new Label(); sec.Text = b.Testament == "AT" ? "Antigo Testamento" : "Novo Testamento";
+                    sec.Font = new Font("Segoe UI", 9, FontStyle.Bold); sec.ForeColor = SystemColors.GrayText;
+                    sec.AutoSize = false; sec.Size = new Size(810, 22); sec.TextAlign = ContentAlignment.BottomLeft;
+                    flow.SetFlowBreak(sec, true);
+                    flow.Controls.Add(sec);
+                }
+                Book book = b;
+                Button btn = MakeButton(b.Name); btn.Size = new Size(112, 28); btn.Margin = new Padding(2);
+                btn.FlatStyle = FlatStyle.Flat; btn.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
+                btn.BackColor = b.Id >= 1 && b.Id <= 66 ? GroupColors[GroupOf(b.Id)] : SystemColors.Control;
+                btn.Font = new Font("Segoe UI", 8.25f, b.Id == tab.BookId ? FontStyle.Bold : FontStyle.Regular);
+                if (b.Id >= 1 && b.Id <= 66) tip.SetToolTip(btn, b.Name + " - " + GroupNames[GroupOf(b.Id)] + ", " + b.Chapters + " capitulo(s)");
+                btn.Click += delegate
+                {
+                    if (book.Chapters == 1) FillVerseGrid(tab, host, book, 1);
+                    else FillChapterGrid(tab, host, book);
+                };
+                flow.Controls.Add(btn);
+            }
+        }
+
+        void FillChapterGrid(PassageTab tab, Panel host, Book book)
+        {
+            FlowLayoutPanel flow = PickerFlow(host, book.Name + " - escolha o capitulo", () => FillBookGrid(tab, host));
+            for (int c = 1; c <= book.Chapters; c++)
+            {
+                int chapter = c;
+                Button btn = MakeButton(c.ToString()); btn.Size = new Size(44, 30); btn.Margin = new Padding(2);
+                btn.FlatStyle = FlatStyle.Flat; btn.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
+                btn.BackColor = GroupColors[GroupOf(Math.Max(1, Math.Min(66, book.Id)))];
+                if (book.Id == tab.BookId && c == tab.Chapter) btn.Font = new Font(btn.Font, FontStyle.Bold);
+                btn.Click += delegate { FillVerseGrid(tab, host, book, chapter); };
+                flow.Controls.Add(btn);
+            }
+        }
+
+        void FillVerseGrid(PassageTab tab, Panel host, Book book, int chapter)
+        {
+            FlowLayoutPanel flow = PickerFlow(host, book.Name + " " + chapter + " - escolha o versiculo",
+                book.Chapters == 1 ? (Action)(() => FillBookGrid(tab, host)) : () => FillChapterGrid(tab, host, book));
+            Button whole = MakeButton("Abrir o capitulo " + chapter); whole.Size = new Size(160, 30); whole.Margin = new Padding(2, 2, 2, 8);
+            whole.Click += delegate { picker.Close(); GoInTab(tab, book.Id, chapter, 1); };
+            flow.Controls.Add(whole); flow.SetFlowBreak(whole, true);
+            foreach (Verse v in tab.Version.GetChapter(book.Id, chapter))
+            {
+                int verse = v.V;
+                Button btn = MakeButton(v.V.ToString()); btn.Size = new Size(44, 30); btn.Margin = new Padding(2);
+                btn.FlatStyle = FlatStyle.Flat; btn.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
+                tip.SetToolTip(btn, v.T.Length > 120 ? v.T.Substring(0, 120) + "..." : v.T);
+                btn.Click += delegate { picker.Close(); GoInTab(tab, book.Id, chapter, verse); };
+                flow.Controls.Add(btn);
+            }
+        }
+
+        // Abre outra passagem na mesma aba (mesma versao), sem voltar ao Indice Digital.
+        void GoInTab(PassageTab tab, int bookId, int chapter, int verse)
+        {
+            if (!tab.Version.BooksById.ContainsKey(bookId)) return;
+            tab.BookId = bookId; tab.Chapter = chapter; tab.Verse = verse; tab.Marks = null;
+            RenderPassage(tab);
+            tabs.SelectedTab = tab.Page;
+            lastPassage = tab; currentBookId = bookId; currentChapter = chapter; currentVerse = verse;
+            NoteReading(tab);
+        }
+
+        // Acrescenta um trecho e aplica a formatacao depois, pela selecao: assim o RichEdit guarda fonte,
+        // cor e elevacao mesmo numa aba que ainda nao foi exibida.
+        static void Put(RichTextBox rtb, string text, Font font, Color color, int offset)
+        {
+            int s = rtb.TextLength;
+            rtb.AppendText(text);
+            int n = rtb.TextLength - s;
+            if (n > 0)
+            {
+                rtb.Select(s, n);
+                rtb.SelectionFont = font; rtb.SelectionColor = color; rtb.SelectionCharOffset = offset;
+            }
+            rtb.Select(rtb.TextLength, 0);
+        }
+
         // Sinais depois do versiculo: ✎ tem anotacao, ★ esta nos favoritos.
         static string MarkerText(PassageTab tab, int verse)
         {
@@ -2995,9 +3338,7 @@ namespace BibliaDigital
         {
             string m = MarkerText(tab, verse);
             if (m.Length == 0) return;
-            rtb.SelectionFont = markerFont;
-            rtb.SelectionColor = AccentColor();
-            rtb.AppendText(m);
+            Put(rtb, m, markerFont, AccentColor(), 0);
         }
 
         // Posicoes (inicio, fim) no texto original das palavras buscadas, ignorando acentos e maiusculas.
@@ -3297,6 +3638,13 @@ namespace BibliaDigital
             readingMode = 2; SetTheme(0);
             OpenReference(1, 1, 1, null, true);
             shot("tela-paragrafos.png");
+            OpenReference(43, 1, 1, null, true);
+            shot("tela-paragrafos-nt.png");
+            ShowPicker(lastPassage);
+            shot("tela-seletor.png");
+            picker.Close();
+            readingMode = 0; OpenReference(43, 3, 16, null, true);
+            shot("tela-versiculos.png");
             // Estudos: marca-texto, anotacao e favorito em Joao 3 (so em memoria) e a aba Meus estudos.
             readingMode = 0; SetTheme(0);
             UserData.SetMark(43, 3, 16, "amarelo"); UserData.SetMark(43, 3, 17, "verde");
@@ -3456,15 +3804,62 @@ namespace BibliaDigital
                 " linhas, destaque em: '" + txtChapter.Text.Substring(txtChapter.SelectionStart, 30) + "...'");
             continuousText = false;
 
-            // Paragrafos reais (AT) e aviso nos livros sem marcas (NT)
-            readingMode = 2; OpenReference(1, 1, 1);
-            string gtxt = txtChapter.Text;
-            Verse g16 = current.GetChapter(1, 1).FirstOrDefault(x => x.V == 6), g12 = current.GetChapter(1, 1).FirstOrDefault(x => x.V == 2);
-            int i6 = g16 != null ? gtxt.IndexOf(g16.T, StringComparison.Ordinal) : -1, i2 = g12 != null ? gtxt.IndexOf(g12.T, StringComparison.Ordinal) : -1;
-            sb.AppendLine("Paragrafos (" + Paragraphs.Count + " inicios) Genesis 1 -> quebra antes de 1:6=" + (i6 >= 2 && gtxt.Substring(i6 - 2, 2) == "\n\n") +
-                ", antes de 1:2=" + (i2 >= 2 && gtxt.Substring(i2 - 2, 2) == "\n\n") + ", blocos=" + gtxt.Split(new[] { "\n\n" }, StringSplitOptions.None).Length);
+            // Paragrafos reais (AT: WLC; NT: SBLGNT), agora com recuo e sem linha em branco:
+            // o versiculo abre paragrafo quando o caractere antes do seu numero e a quebra de linha.
+            readingMode = 2;
+            Func<int, int, int, bool> breakBefore = (b, c, v) =>
+            {
+                OpenReference(b, c, 1);
+                int[] r = lastPassage.VerseRanges.FirstOrDefault(x => x[2] == v);
+                return r != null && r[0] > 0 && txtChapter.Text[r[0] - 1] == '\n';
+            };
+            bool g6 = breakBefore(1, 1, 6), g2 = breakBefore(1, 1, 2);
+            int blocks = txtChapter.Text.Split('\n').Length;
+            sb.AppendLine("Paragrafos (" + Paragraphs.Count + " inicios) Genesis 1 -> quebra antes de 1:6=" + g6 + ", antes de 1:2=" + g2 +
+                ", linhas de paragrafo=" + blocks + ", linha em branco=" + txtChapter.Text.Contains("\n\n"));
+            // NT: paragrafos do SBLGNT (Mateus 5 abre paragrafo em 5:1 e 5:3; Romanos 6 em 6:1 e 6:5, nao em 6:2)
+            bool mt3 = breakBefore(40, 5, 3), rm5 = breakBefore(45, 6, 5), rm2 = breakBefore(45, 6, 2);
             OpenReference(40, 5, 1);
-            sb.AppendLine("Paragrafos Mateus 5 -> aviso de fonte sem paragrafos=" + txtChapter.Text.Contains("nao tem marcas de paragrafo"));
+            sb.AppendLine("Paragrafos NT (SBLGNT) -> Mateus 5: quebra antes de 5:3=" + mt3 + ", aviso de fonte sem paragrafos=" +
+                txtChapter.Text.Contains("nao tem marcas de paragrafo") + " | Romanos 6: antes de 6:5=" + rm5 + ", antes de 6:2=" + rm2 +
+                " | livros do NT com paragrafos=" + Enumerable.Range(40, 27).Count(Paragraphs.HasBook));
+            // Diagramacao 1.9: numero sobrescrito, capitular, recuo/justificado, coluna e seletor.
+            IntPtr hfd = Handle; // a janela oculta precisa existir para o RichEdit guardar a formatacao
+            OpenReference(43, 3, 1);
+            {
+                RichTextBox rtd = txtChapter; PassageTab pt = lastPassage;
+                IntPtr hrd = rtd.Handle; RenderPassage(pt);
+                int[] rd16 = pt.VerseRanges.First(x => x[2] == 16);
+                rtd.Select(rd16[0], 2);
+                bool sup = rtd.SelectionCharOffset > 0 && rtd.SelectionFont.Size < readerFontSize && rtd.SelectionColor == AccentColor();
+                int dropAt = rtd.Text.IndexOf('\n') + 1;
+                rtd.Select(dropAt, 1);
+                bool drop = rtd.Text[dropAt] == '3' && rtd.SelectionFont.Size >= readerFontSize * 2;
+                string copied = CopyText(pt, rtd, rd16[0], rd16[1]);
+                rtd.Select(rd16[0], 2); string supInfo = " [num='" + rtd.SelectedText + "' off=" + rtd.SelectionCharOffset + " tam=" + rtd.SelectionFont.Size + " cor=" + rtd.SelectionColor.Name + "/" + AccentColor().Name + "]";
+                rtd.Select(dropAt, 1); supInfo += " [cap='" + rtd.SelectedText + "' tam=" + rtd.SelectionFont.Size + " modo=" + readingMode + "]";
+                sb.AppendLine("Diagramacao paragrafos Joao 3 -> numero 16 sobrescrito=" + sup + ", capitular '3'=" + drop + supInfo +
+                    ", titulo da aba='" + pt.Title.Text + "', copiar 16 -> " + copied.Replace("\r\n", " / "));
+                pt.Page.Bounds = tabs.DisplayRectangle; pt.Page.PerformLayout();
+                columnIndex = 0; ApplyColumn(pt); int pNarrow = pt.ReadingHost.Padding.Left;
+                columnIndex = 3; ApplyColumn(pt); int pFull = pt.ReadingHost.Padding.Left;
+                columnIndex = 1; ApplyColumn(pt);
+                sb.AppendLine("Coluna -> margem lateral estreita=" + pNarrow + " px, toda a janela=" + pFull + " px, media=" + pt.ReadingHost.Padding.Left + " px (host " + pt.ReadingHost.ClientSize.Width + " px)");
+                justifyText = false; RenderPassage(pt); justifyText = true; RenderPassage(pt);
+                GoInTab(pt, 45, 8, 28);
+                sb.AppendLine("Seletor (GoInTab) -> aba '" + pt.Page.Text + "', versiculo " + pt.Verse + ", ultima leitura " + lastRead);
+                ShowPicker(pt); Application.DoEvents();
+                Panel ph = (Panel)((ToolStripControlHost)picker.Items[0]).Control;
+                FlowLayoutPanel books = ph.Controls.OfType<FlowLayoutPanel>().First();
+                int nb = books.Controls.OfType<Button>().Count();
+                Button rom = books.Controls.OfType<Button>().First(x => x.Text == pt.Version.BooksById[45].Name);
+                rom.PerformClick();
+                int nc = ph.Controls.OfType<FlowLayoutPanel>().First().Controls.OfType<Button>().Count();
+                picker.Close();
+                sb.AppendLine("Seletor grade -> livros=" + nb + ", capitulos de Romanos=" + nc + ", cor dos grupos: Gn " + GroupNames[GroupOf(1)] + ", Rm " + GroupNames[GroupOf(45)]);
+                ClosePassage(pt);
+            }
+            readingMode = 0;
 
             // Livro aberto: Salmo 119 inteiro nas paginas, sem cortar texto
             Size = new Size(1280, 860); IntPtr hForm = Handle;
@@ -3565,6 +3960,20 @@ namespace BibliaDigital
             sb.AppendLine("Destaque 'o senhor' em " + results.Items[0].Text + " -> " +
                 string.Join(", ", FindMarks(fv.T, lastSearchMarks).Select(r => fv.T.Substring(r[0], r[1] - r[0]))));
 
+            // Almeida 1911 com ortografia atualizada: a busca por grafia atual passa a encontrar
+            {
+                int ia = versions.FindIndex(x => x.Key == "pt-alm1911"), ib = versions.FindIndex(x => x.Key == "pt-alm1911a");
+                if (ia >= 0 && ib >= 0)
+                {
+                    Func<int, string, string> conta = (iv, termo) => { cmbVersion.SelectedIndex = iv; chkExact.Checked = true; rbAll.Checked = true; txtSearch.Text = termo; DoSearch(); return results.Items.Count.ToString(); };
+                    string r = "";
+                    foreach (string termo in new[] { "Cristo", "profeta", "Egito", "ele" })
+                        r += " | '" + termo + "' 1911=" + conta(ia, termo) + " atualizada=" + conta(ib, termo);
+                    Verse gn2 = versions[ib].GetChapter(1, 1).FirstOrDefault(x => x.V == 2);
+                    sb.AppendLine("Almeida 1911 atualizada" + r + " | Gn 1:2: " + (gn2 != null ? gn2.T : "-"));
+                    cmbVersion.SelectedIndex = 0;
+                }
+            }
             sb.AppendLine("Versoes: " + string.Join(" | ", versions.Select(x => x.Abbr + " " + x.Verses.Count + " vers., AT " +
                 x.Books.Count(b => b.Testament == "AT") + "/NT " + x.Books.Count(b => b.Testament == "NT"))));
             foreach (BibleVersion bv in versions)

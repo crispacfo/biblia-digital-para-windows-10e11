@@ -1,6 +1,44 @@
 ﻿Biblia Digital - historico de versoes (da mais nova para a mais antiga)
 Biblia Digital (c) 2026 Estudo Biblico - http://estudobiblico.org
 
+Novidades da versao 1.9.2 (correcoes de texto):
+- Biblia Livre: corrigidos erros de digitacao e de acento (principio > princípio em Pv 1:7 e Ap 22:13,
+  Espirito > Espírito em At 13:2, sera > será, Porem/porem > Porém, gloria > glória, numero > número,
+  arvore > árvore, lideres > líderes, decimo > décimo, Amem > Amém, dominio > domínio, sairam > saíram,
+  ruina > ruína; "ma voz" > "uma voz" em At 9:4; "é so eu filho?E" > "é seu filho? E" em Mc 12:37;
+  "os que já morrera" > "morreram" em Lm 3:6; "a pondo de" > "a ponto de" em Ap 10:4) e 92 espacos
+  antes do hifen ("trouxe -o" > "trouxe-o"). Ficam como estao as formas certas: "gloria-te", "eu me refugio",
+  "não pecas", "vira" (de virar ou de ver), "para os porem" (verbo pôr).
+- Almeida 1911 (ortografia atualizada): o mais-que-perfeito nao vira mais futuro (fallara > falara, e nao
+  falará; tambem saíra, caíra, destruíra, aparecera, ressuscitara, pudera...) e a conjuncao "porem" passa a
+  "porém". A grafia "cobiça" (1911: cubiça) ja estava certa nos 20 versiculos, igual a Biblia Livre e a VEB.
+
+Novidades da versao 1.9.1:
+- Nova versao: Almeida 1911 (ortografia atualizada), ao lado da original. So a grafia muda (Christo > Cristo,
+  propheta > profeta, elle > ele, Egypto > Egito, d'elles > deles, matal-o > matá-lo, dar-te-hei > dar-te-ei);
+  vocabulario e gramatica de 1911 ficam (vós, porém, cousa). Nomes proprios seguem as formas da Biblia Livre e da
+  VEB (David > Davi, Jacob > Jacó). Agora a busca por "Cristo", "profeta" ou "Egito" tambem encontra a Almeida 1911.
+
+Novidades da versao 1.9.0 (diagramacao):
+- Leitura em paragrafos com o numero de cada versiculo pequeno e elevado, na cor de destaque, como numa
+  Biblia impressa (antes os numeros sumiam nesse modo). O texto corrido continua sem numeros.
+- Paragrafos com recuo na primeira linha, sem linha em branco entre eles; texto justificado; entrelinha
+  ajustavel. No modo versiculo por versiculo, a linha que continua o versiculo alinha depois do numero.
+- Numero do capitulo grande (capitular) no inicio do texto; o nome do livro em maiusculas no alto.
+- Coluna de texto com largura maxima (65, 80 ou 100 letras, ou toda a janela), centralizada em telas largas.
+- Botao "Formato" na barra da passagem: justificar, entrelinha e largura da coluna (ficam salvos).
+- Titulo da passagem (ex.: "Joao 3 (VEB) ▾") e um seletor: clique e escolha livro, capitulo e versiculo
+  numa grade, sem voltar ao Indice Digital. Os livros tem cores por grupo (Lei, Historicos, Poeticos,
+  Profetas maiores e menores, Evangelhos e Atos, Cartas de Paulo, Cartas gerais, Profecia).
+- Rodape reduzido a uma linha; creditos e licencas de cada texto no link "Creditos e direitos dos textos".
+- O livro aberto (duas paginas) mantem a paginacao propria.
+
+Novidades da versao 1.8.2:
+- Leitura em paragrafos tambem no Novo Testamento: os inicios de paragrafo vem do SBL Greek New Testament
+  (SBLGNT, CC BY 4.0), aplicados por referencia (1271 paragrafos nos 27 livros). Antes o NT aparecia como
+  texto corrido com aviso. Vale para todas as versoes; no livro aberto tambem.
+- Credito do SBLGNT no rodape, no LEIA-ME e no LICENCA.
+
 Novidades da versao 1.8.1:
 - Download em dois pacotes: BibliaDigital-1.8.1-Windows.zip (programa, textos e LEIA-ME) e
   BibliaDigital-1.8.1-Codigo-Fonte.zip (codigo C#, scripts de compilacao e documentacao tecnica).

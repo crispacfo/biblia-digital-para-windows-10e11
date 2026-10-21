@@ -1,14 +1,14 @@
-﻿BÍBLIA DIGITAL 1.8.1 — CÓDIGO-FONTE
+﻿BÍBLIA DIGITAL 1.9.2 — CÓDIGO-FONTE
 Bíblia Digital © 2026 Estudo Bíblico — http://estudobiblico.org
 Distribuição livre e gratuita autorizada (veja LICENCA.txt).
 
 Este pacote contém o código-fonte completo do BibliaDigital.exe, sem o executável e sem os textos
-bíblicos. Para apenas usar o programa, baixe BibliaDigital-1.8.1-Windows.zip.
+bíblicos. Para apenas usar o programa, baixe BibliaDigital-1.9.2-Windows.zip.
 
 
 CONTEÚDO
   LEIA-ME-DESENVOLVEDOR.txt   este arquivo
-  HISTORICO.txt               novidades de cada versão (1.3.0 a 1.8.1)
+  HISTORICO.txt               novidades de cada versão (1.3.0 a 1.9.2)
   LICENCA.txt                 propriedade, distribuição e direitos dos textos
   codigo-fonte\
     BibliaDigital.cs          o programa inteiro (C# 5 / Windows Forms, um único arquivo, ~3.800 linhas)
@@ -22,9 +22,8 @@ COMO COMPILAR
 Não é preciso instalar Visual Studio nem SDK: usa o compilador C# (csc.exe) do .NET Framework 4,
 que já vem no Windows 10 e 11 (%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe).
 1. Execute codigo-fonte\compilar.bat. O BibliaDigital.exe é gravado na pasta acima de codigo-fonte.
-2. No repositório git a pasta "data" já vem pronta. No pacote Codigo-Fonte.zip ela não vem:
-   copie-a do pacote BibliaDigital-1.8.1-Windows.zip para ao lado do BibliaDigital.exe:
-     BibliaDigital-1.8.1-Codigo-Fonte\
+2. Copie a pasta "data" do pacote BibliaDigital-1.9.2-Windows.zip para ao lado do BibliaDigital.exe:
+     BibliaDigital-1.9.2-Codigo-Fonte\
        BibliaDigital.exe      (gerado)
        data\                  (copiada do pacote Windows)
        codigo-fonte\
@@ -52,7 +51,8 @@ ORGANIZAÇÃO DO CÓDIGO (BibliaDigital.cs)
   Book, Verse, BibleVersion   modelo: livros, versículos (texto original + normalizado) e versões
   TextUtil                    normalização (minúsculas, sem acentos) com tabela por caractere
   Search                      busca por palavra inteira
-  Paragraphs                  inícios de parágrafo do AT (data\paragrafos.txt)
+  Paragraphs                  inícios de parágrafo do AT e do NT (data\paragrafos.txt)
+  ParaFormat                  EM_SETPARAFORMAT do RichEdit: justificar, recuo, entrelinha, espaço antes
   DataLoader                  leitura de data\biblias.txt (versões em paralelo), dicionários e versões do usuário
   ImportResult, VersionImport importação: detecção de formato, colunas/referências/JSON, identificação dos livros
                               pelo idioma que mais reconhece, gravação no formato do programa
@@ -69,7 +69,8 @@ data\biblias.txt — campos separados por TAB; linhas vazias ou iniciadas por # 
   @V  chave  sigla  idioma  nome                 começa uma versão
   @L  id  código  AT|NT  capítulos  nome         livro da versão atual (id 1 a 66)
   livro  capítulo  versículo  texto              versículo da versão atual
-data\paragrafos.txt — livro TAB capítulo TAB versículo TAB P|S (início de parágrafo, marcas pe/samekh)
+data\paragrafos.txt — livro TAB capítulo TAB versículo TAB P|S|G (início de parágrafo: P/S = marcas pe/samekh
+                       do WLC no AT; G = SBLGNT no NT, gerado por gera_paragrafos_nt.py a partir do XML oficial)
 data\dicionario_analogico.csv e data\sinonimos.csv — termo,relacionados separados por |
 Um erro em data\biblias.txt interrompe a abertura (dado corrompido); um erro numa versão importada
 só deixa aquela versão de fora, com aviso.

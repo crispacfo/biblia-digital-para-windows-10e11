@@ -6,10 +6,25 @@ instalado sem custo, mantendo este aviso e o rodapé do programa.
 
 Textos bíblicos incluídos no programa (pasta data):
 - Almeida 1911, King James Version, Reina-Valera 1909 e Louis Segond 1910: domínio público.
+- Almeida 1911 (ortografia atualizada): texto de domínio público com a grafia atualizada pelo Estudo
+  Bíblico (2026), sem mudar vocabulário nem gramática. A conferência das palavras usou o dicionário
+  ortográfico VERO (pt_BR, LibreOffice, LGPLv3/MPL) apenas como ferramenta; ele não faz parte do programa.
 - Bíblia Livre (BLIVRE): Copyright (c) Diego Santos, Mário Sérgio e Marco Teles, sob licença
   livre Creative Commons Atribuição 3.0 Brasil (http://creativecommons.org/licenses/by/3.0/br/):
   uso e distribuição livres, com crédito aos autores.
+  Nesta edição foram corrigidos erros de digitação e de acentuação do texto (ex.: princípio, Espírito,
+  glória, porém, "é seu filho" em Mc 12:37), sem mudar a tradução.
 - VEB - Versão Estudo Bíblico: pertence ao Estudo Bíblico (http://estudobiblico.org).
+
+Divisão em parágrafos (arquivo data\paragrafos.txt, usada só na exibição):
+- Antigo Testamento: marcas pe/samekh do Códice de Leningrado (Open Scriptures Hebrew Bible, CC BY 4.0).
+- Novo Testamento: SBL Greek New Testament (SBLGNT), Copyright (c) 2010 Society of Biblical Literature
+  e Logos Bible Software, licença Creative Commons Atribuição 4.0 (https://creativecommons.org/licenses/by/4.0/),
+  https://sblgnt.com e https://github.com/LogosBible/SBLGNT. Usamos apenas os inícios de parágrafo,
+  aplicados por referência aos textos do programa; o texto grego do SBLGNT não está incluído.
+  Alterações nossas: 24 parágrafos que no SBLGNT começam no meio de um versículo passam a começar no
+  versículo seguinte, e 1 início (3 Jo 15, inexistente na numeração do Textus Receptus) foi omitido.
+  O SBL e a Logos não endossam esta adaptação.
 
 Versões importadas pelo usuário (botão "Versões...") não fazem parte desta distribuição e seguem
 os direitos de seus próprios autores e editoras.

@@ -1,4 +1,4 @@
-﻿BÍBLIA DIGITAL 1.8.1 — para Windows 10 e 11
+﻿BÍBLIA DIGITAL 1.9.2 — para Windows 10 e 11
 Bíblia Digital © 2026 Estudo Bíblico — http://estudobiblico.org
 Distribuição livre e gratuita autorizada: copie e compartilhe à vontade, sem custo.
 
@@ -22,7 +22,8 @@ Requisitos: Windows 10 ou 11. Não é preciso instalar nada (o .NET Framework 4 
 
 
 O QUE O PROGRAMA FAZ
-- Seis versões: VEB — Versão Estudo Bíblico, Bíblia Livre, Almeida 1911 (português), King James (inglês),
+- Sete versões: VEB — Versão Estudo Bíblico, Bíblia Livre, Almeida 1911 e Almeida 1911 com ortografia
+  atualizada (português), King James (inglês),
   Reina-Valera 1909 (espanhol) e Louis Segond 1910 (francês).
 - Índice Digital: escolha a versão, o livro, o capítulo e o versículo e clique em "Abrir".
 - Busca: digite uma palavra ou frase e clique em "Buscar".
@@ -32,6 +33,9 @@ O QUE O PROGRAMA FAZ
   * Acentos e maiúsculas não atrapalham.
   Clique num resultado para abrir o capítulo (Ctrl+clique abre em nova aba).
 - Leitura: versículo por versículo, texto corrido, parágrafos ou livro aberto (duas páginas).
+  Em parágrafos, o número de cada versículo aparece pequeno e elevado, como numa Bíblia impressa.
+  Botão "Formato": justificar, entrelinha e largura da coluna de texto.
+  Clique no título da passagem (ex.: "João 3 ▾") para escolher outro livro, capítulo ou versículo.
   No livro aberto, vire as folhas com as setas, PageUp/PageDown ou a roda do mouse.
   Fonte, tamanho da letra (A- / A+) e tema de cor ficam na barra acima do texto.
 - Estudos: clique com o botão direito num versículo para marcar com cor, escrever anotação,
@@ -65,15 +69,21 @@ O programa não usa a internet e não envia nenhum dado.
 
 DIREITOS DOS TEXTOS
 - Almeida 1911, King James Version, Reina-Valera 1909 e Louis Segond 1910: domínio público.
+- Almeida 1911 (ortografia atualizada): o mesmo texto de 1911 só com a grafia atual (Cristo, profeta, ele,
+  Egito...), feita pelo Estudo Bíblico em 2026; vocabulário e gramática de 1911 mantidos. Domínio público.
 - Bíblia Livre (BLIVRE): Copyright (c) Diego Santos, Mário Sérgio e Marco Teles, sob licença livre
   Creative Commons Atribuição 3.0 Brasil (http://creativecommons.org/licenses/by/3.0/br/).
+  Nesta edição foram corrigidos erros de digitação e de acentuação do texto (ex.: princípio, Espírito,
+  glória, porém, "é seu filho" em Mc 12:37), sem mudar a tradução.
 - VEB — Versão Estudo Bíblico: pertence ao Estudo Bíblico (http://estudobiblico.org).
   Antigo Testamento traduzido do Códice de Leningrado (Westminster Leningrad Codex, via Open Scriptures
   Hebrew Bible, CC BY 4.0); Novo Testamento traduzido do Textus Receptus (Scrivener 1894).
 - Marcas de parágrafo do Antigo Testamento: Open Scriptures Hebrew Bible (CC BY 4.0).
+- Parágrafos do Novo Testamento: SBL Greek New Testament (SBLGNT), (c) 2010 Society of Biblical
+  Literature e Logos Bible Software, CC BY 4.0 (https://sblgnt.com) - só a divisão, adaptada (veja LICENCA.txt).
 Versões importadas pelo usuário seguem os direitos de seus próprios autores.
 
-O código-fonte do programa está disponível em pacote separado (BibliaDigital-1.8.1-Codigo-Fonte.zip)
+O código-fonte do programa está disponível em pacote separado (BibliaDigital-1.9.2-Codigo-Fonte.zip)
 no portal http://estudobiblico.org.
 
 Problemas? Os erros ficam registrados em %LOCALAPPDATA%\BibliaDigital\erro.log.
